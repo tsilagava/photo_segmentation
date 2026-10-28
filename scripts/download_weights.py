@@ -7,10 +7,10 @@ import argparse
 import urllib.request
 from pathlib import Path
 
-# Fill these in after uploading the exported files (README: "Publishing the weights").
+# Release assets: attach weights/v5.pt and weights/v3.pt to a GitHub Release tagged v1.0.
 URLS = {
-    "v5": "https://github.com/<user>/<repo>/releases/download/v1.0/v5.pt",
-    "v3": "https://github.com/<user>/<repo>/releases/download/v1.0/v3.pt",
+    "v5": "https://github.com/tsilagava/photo_segmentation/releases/download/v1.0/v5.pt",
+    "v3": "https://github.com/tsilagava/photo_segmentation/releases/download/v1.0/v3.pt",
 }
 
 
@@ -24,7 +24,7 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     for name in URLS:
         url, dest = getattr(a, name), out / f"{name}.pt"
-        if "<user>" in url:
+        if not url:
             raise SystemExit(f"no URL for {name}: edit URLS in {__file__} or pass --{name} <url>")
         if dest.exists():
             print(dest, "already there")

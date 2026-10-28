@@ -22,7 +22,7 @@ Talent Growth Program · Machine Learning Engineer | Computer Vision · End-to-E
 ## Quick start
 
 ```bash
-git clone https://github.com/<user>/<repo>.git && cd <repo>
+git clone https://github.com/tsilagava/photo_segmentation.git && cd photo_segmentation
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python scripts/download_weights.py          # -> weights/v3.pt, weights/v5.pt
