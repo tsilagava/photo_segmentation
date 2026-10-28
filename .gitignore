@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store
+
+data/
+checkpoints/
+results/
+predictions/
+flagged/
+.gradio/
+
+# trained weights are published as release assets, not committed
+weights/*.pt

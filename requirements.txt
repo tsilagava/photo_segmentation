@@ -1,0 +1,15 @@
+torch>=2.2
+torchvision>=0.17
+numpy>=1.24
+pillow>=10.0
+scipy>=1.10
+pandas>=2.0
+scikit-learn>=1.3
+tqdm>=4.65
+# ViTMatte soft edges (optional at runtime, loaded on first use)
+transformers>=4.40
+# serving
+fastapi>=0.110
+uvicorn>=0.29
+python-multipart>=0.0.9
+gradio>=4.44
