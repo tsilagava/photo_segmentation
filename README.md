@@ -4,7 +4,6 @@ Segments cats and dogs in photos: a **U-Net with an ImageNet-pretrained ResNet-3
 Oxford-IIIT Pet trimaps, two models (v3 at 256 px and v5 at 384 px) **ensembled with test-time augmentation**,
 plus optional **soft edges with ViTMatte**. Includes training and evaluation scripts, a CLI, a REST API and a web demo.
 
-Talent Growth Program · Machine Learning Engineer | Computer Vision · End-to-End ML Project
 
 ## შეფასების მასალები (deliverables)
 
