@@ -4,6 +4,9 @@ Segments cats and dogs in photos: a **U-Net with an ImageNet-pretrained ResNet-3
 Oxford-IIIT Pet trimaps, two models (v3 at 256 px and v5 at 384 px) **ensembled with test-time augmentation**,
 plus optional **soft edges with ViTMatte**. Includes training and evaluation scripts, a CLI, a REST API and a web demo.
 
+![Results on new photos: photo, mask overlay, cut-out](docs/examples.jpg)
+
+*The trained ensemble on new photos from Wikimedia Commons (not part of the training data). Credits under [Data and licences](#data-and-licences).*
 
 ## შეფასების მასალები (deliverables)
 
@@ -14,7 +17,7 @@ plus optional **soft edges with ViTMatte**. Includes training and evaluation scr
 | ბიბლიოთეკები და დამოკიდებულებები | [`requirements.txt`](requirements.txt), [Installation](#installation) |
 | სტრუქტურა და გაშვება | [Project structure](#project-structure), [Quick start](#quick-start) |
 | ახალ გამოსახულებებზე გამოყენება | `predict.py`, ვებ დემო (`app.py`), API (`POST /predict`) |
-| შედეგების ვიზუალური წარმოდგენა | overlay / mask / cut-out დემოში და `predict.py`-ის გამოსავალში, [Results](#results) |
+| შედეგების ვიზუალური წარმოდგენა | მაგალითები ზემოთ და [Demo](#demo)-ში, overlay / mask / cut-out დემოში და `predict.py`-ის გამოსავალში, [Results](#results) |
 | მოქმედი API / აპლიკაცია | `uvicorn api:app` → `/docs` (REST API) და `/ui` (ვებ დემო), Docker |
 | გაწვრთნილი მოდელის ფაილი | `weights/v3.pt`, `weights/v5.pt` (რეპოზიტორიაშივეა), ხელახლა მიღება: [`weights/README.md`](weights/README.md) |
 
@@ -26,6 +29,18 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt             # the trained models are already in weights/
 uvicorn api:app --port 8000                 # demo: http://localhost:8000/ui   API docs: http://localhost:8000/docs
 ```
+
+## Demo
+
+Open http://localhost:8000/ui (or run `python app.py`), drop in a photo and get the overlay, the mask and a
+transparent cut-out. The same model is behind the REST API at `/predict` (interactive docs at `/docs`).
+
+<img src="docs/demo.jpg" alt="Web demo: uploaded photo and mask overlay" width="640">
+
+With **Soft edges with ViTMatte** ticked, fur and whiskers get a soft alpha instead of a hard cut (and the strip of
+background the hard mask keeps along the head disappears):
+
+![Hard mask edge vs ViTMatte soft edge](docs/vitmatte.jpg)
 
 ## How it works
 
@@ -245,3 +260,11 @@ pip install pytest httpx && pytest
 
 [Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets/) (Parkhi et al., 2012), CC BY-SA 4.0.
 ViTMatte: `hustvl/vitmatte-small-composition-1k` (Apache-2.0).
+
+Example photos in `docs/`, from Wikimedia Commons:
+[cat on sofa](https://commons.wikimedia.org/wiki/File:Female_cat_sitting_down_on_sofa.jpg) by Smirkybec (CC BY-SA 4.0);
+[running dog](https://commons.wikimedia.org/wiki/File:FBI_dog_dolce_running.jpg) by the Federal Bureau of Investigation (public domain);
+[two puppies](https://commons.wikimedia.org/wiki/File:Two_puppies_playing_together_one_standing_over_the_other_at_golden_hour_in_Don_Det_Laos.jpg) by Basile Morin (CC BY-SA 4.0);
+[kitten](https://commons.wikimedia.org/wiki/File:Six_weeks_old_cat_%28aka%29.jpg) by André Karwath aka Aka (CC BY-SA 2.5);
+[golden retriever](https://commons.wikimedia.org/wiki/File:D%C3%BClmen,_Hausd%C3%BClmen,_Golden_Retriever_--_2022_--_5945.jpg) by Dietmar Rabich (CC BY-SA 4.0).
+Shown here segmented, as overlays and cut-outs; the derived images in `docs/` are shared under the same licences.
