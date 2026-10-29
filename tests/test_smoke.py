@@ -35,6 +35,15 @@ def test_predictor(weights_dir):
     assert set(np.unique(tri)) == {0, 128, 255}
 
 
+def test_exif_rotation(weights_dir, tmp_path):
+    """A phone photo stored sideways with EXIF orientation 6 is segmented the way it is displayed (portrait)."""
+    seg = PetSegmenter({p.stem: p for p in weights_dir.glob("*.pt")}, device="cpu", max_side=None)
+    exif = Image.Exif()
+    exif[274] = 6
+    Image.new("RGB", (80, 60)).save(tmp_path / "phone.jpg", exif=exif)
+    assert seg.predict(tmp_path / "phone.jpg", tta=False)["mask"].shape == (80, 60)
+
+
 def test_api(weights_dir, monkeypatch):
     monkeypatch.setenv("WEIGHTS_DIR", str(weights_dir))
     from fastapi.testclient import TestClient

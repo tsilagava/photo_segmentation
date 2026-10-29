@@ -92,6 +92,17 @@ ViTMatte keeps the IoU and puts its soft pixels where the annotators marked the 
 
 Reproduce with `python evaluate.py --labels <trimaps_clean> --splits <clean_splits>`.
 
+## Limitations
+
+Found by testing on new photos from the internet (Wikimedia Commons), outside the Oxford-IIIT Pet data:
+
+* **Any animal counts as a pet.** The model separates animal from background and does not classify species,
+  so a horse is segmented like a dog. Photos without animals (landscapes, people) correctly give an empty mask.
+* **Very small pets are missed.** A pet covering ~1–2 % of the frame (far away in a wide shot) is usually not found;
+  the training data has almost no pets that small. From about 5 % of the frame upwards it works well.
+* **Several pets come out as one mask** (one pet vs background, no instances).
+* **CPU speed.** About 1 s per photo with TTA (two models × 6 passes), about 4 s with ViTMatte.
+
 ## Installation
 
 Python 3.10–3.12. A GPU is used if available, otherwise everything runs on CPU (inference ≈ 1–3 s per photo with TTA).

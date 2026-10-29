@@ -11,7 +11,7 @@ from pathlib import Path
 import numpy as np
 import torch
 import torch.nn.functional as F
-from PIL import Image
+from PIL import Image, ImageOps
 from scipy import ndimage
 
 from .model import load_segmenter
@@ -111,7 +111,7 @@ class PetSegmenter:
             image = Image.open(image)
         if isinstance(image, np.ndarray):
             image = Image.fromarray(image)
-        image = image.convert("RGB")
+        image = ImageOps.exif_transpose(image).convert("RGB")   # phone photos: apply the EXIF rotation
         if self.max_side and max(image.size) > self.max_side:
             image.thumbnail((self.max_side, self.max_side), Image.LANCZOS)
         return np.array(image)
