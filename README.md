@@ -4,6 +4,9 @@ Segments cats and dogs in photos: a **U-Net with an ImageNet-pretrained ResNet-3
 Oxford-IIIT Pet trimaps, two models (v3 at 256 px and v5 at 384 px) **ensembled with test-time augmentation**,
 plus optional **soft edges with ViTMatte**. Includes training and evaluation scripts, a CLI, a REST API and a web demo.
 
+**Try it online, nothing to install: https://huggingface.co/spaces/Tea101/pet-segmentation**
+(the models run in your browser; photos are not uploaded anywhere)
+
 ![Results on new photos: photo, mask overlay, cut-out](docs/examples.jpg)
 
 *The trained ensemble on new photos from Wikimedia Commons (not part of the training data). Credits under [Data and licences](#data-and-licences).*
@@ -18,7 +21,7 @@ plus optional **soft edges with ViTMatte**. Includes training and evaluation scr
 | Project structure and how to run it | [Project structure](#project-structure), [Quick start](#quick-start) |
 | Using the model on new images | `predict.py`, web demo (`app.py`), API (`POST /predict`) |
 | Visual presentation of results | examples above and in [Demo](#demo), overlay / mask / cut-out in the demo and in `predict.py`'s output, [Results](#results) |
-| Working API / application | `uvicorn api:app` → `/docs` (REST API) and `/ui` (web demo), Docker |
+| Working API / application | [online demo](https://huggingface.co/spaces/Tea101/pet-segmentation) (no install); locally `uvicorn api:app` → `/docs` (REST API) and `/ui` (web demo), Docker |
 | Trained model file | `weights/v3.pt`, `weights/v5.pt` (included in the repository); to rebuild them: [`weights/README.md`](weights/README.md) |
 
 ## Quick start
@@ -32,8 +35,14 @@ uvicorn api:app --port 8000                 # demo: http://localhost:8000/ui   A
 
 ## Demo
 
-Open http://localhost:8000/ui (or run `python app.py`), drop in a photo and get the overlay, the mask and a
-transparent cut-out. The same model is behind the REST API at `/predict` (interactive docs at `/docs`).
+**Online:** https://huggingface.co/spaces/Tea101/pet-segmentation. The same v3 + v5 ensemble with TTA, exported to
+ONNX and run in the browser with ONNX Runtime Web (WebGPU, or WebAssembly as a fallback): about 1 s per photo, with
+masks matching the PyTorch pipeline (IoU ≥ 0.999 on the example photos). The first visit downloads the two models
+(~100 MB). The page is [`web/index.html`](web/index.html); `python scripts/export_onnx.py` rebuilds `web/models/`.
+ViTMatte soft edges are only in the local demo.
+
+**Locally:** open http://localhost:8000/ui (or run `python app.py`), drop in a photo and get the overlay, the mask and
+a transparent cut-out. The same model is behind the REST API at `/predict` (interactive docs at `/docs`).
 
 <img src="docs/demo.jpg" alt="Web demo: uploaded photo and mask overlay" width="640">
 
@@ -229,7 +238,9 @@ evaluate.py         test-set evaluation (pooled / per-image IoU, by size, specie
 predict.py          batch prediction from the command line
 api.py              FastAPI service (+ the demo at /ui)
 app.py              Gradio web demo
-scripts/            export_weights.py, download_weights.py
+web/                in-browser demo (index.html + ONNX models), published as the Hugging Face Space
+examples/           example photos shown in the demos
+scripts/            export_weights.py, download_weights.py, export_onnx.py
 weights/            trained models v3.pt, v5.pt (see weights/README.md)
 notebooks/          the Colab experiments
 tests/              smoke test (random weights, no dataset needed): pytest
@@ -261,7 +272,7 @@ pip install pytest httpx && pytest
 [Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets/) (Parkhi et al., 2012), CC BY-SA 4.0.
 ViTMatte: `hustvl/vitmatte-small-composition-1k` (Apache-2.0).
 
-Example photos in `docs/`, from Wikimedia Commons:
+Example photos in `docs/`, `examples/` and `web/examples/`, from Wikimedia Commons:
 [cat on sofa](https://commons.wikimedia.org/wiki/File:Female_cat_sitting_down_on_sofa.jpg) by Smirkybec (CC BY-SA 4.0);
 [running dog](https://commons.wikimedia.org/wiki/File:FBI_dog_dolce_running.jpg) by the Federal Bureau of Investigation (public domain);
 [two puppies](https://commons.wikimedia.org/wiki/File:Two_puppies_playing_together_one_standing_over_the_other_at_golden_hour_in_Don_Det_Laos.jpg) by Basile Morin (CC BY-SA 4.0);

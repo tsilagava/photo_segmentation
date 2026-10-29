@@ -6,6 +6,7 @@ Also the entry point for a Hugging Face Space (SDK: gradio). api.py serves the s
 """
 import argparse
 import os
+from pathlib import Path
 
 import gradio as gr
 import numpy as np
@@ -52,6 +53,9 @@ def build_demo():
         with gr.Row():
             mask = gr.Image(label="Mask / alpha", image_mode="L", format="png")
             cut = gr.Image(label="Cut-out", image_mode="RGBA", format="png")
+        examples = sorted(Path(__file__).parent.joinpath("examples").glob("*.jpg"))
+        if examples:
+            gr.Examples([[str(p)] for p in examples], inputs=inp, label="Example photos (click one, then Segment)")
         btn.click(run, [inp, tta, matting], [over, mask, cut, info])
         inp.upload(run, [inp, tta, matting], [over, mask, cut, info])
     return demo

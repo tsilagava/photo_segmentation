@@ -12,3 +12,6 @@ predictions/
 flagged/
 .gradio/
 
+
+# ONNX models for web/ (rebuilt by scripts/export_onnx.py, hosted on the Hugging Face Space)
+web/models/
