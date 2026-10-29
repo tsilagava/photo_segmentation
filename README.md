@@ -8,18 +8,18 @@ plus optional **soft edges with ViTMatte**. Includes training and evaluation scr
 
 *The trained ensemble on new photos from Wikimedia Commons (not part of the training data). Credits under [Data and licences](#data-and-licences).*
 
-## შეფასების მასალები (deliverables)
+## Deliverables
 
-| მოთხოვნა | სად არის |
+| Requirement | Where |
 |---|---|
-| პროექტის სრული საწყისი კოდი | `petseg/` (მოდელი, მონაცემები, ინფერენსი), `train.py`, `evaluate.py`, `predict.py`, `api.py`, `app.py`, `notebooks/` |
-| გაწვრთნისა და გამოყენების ინსტრუქცია | [Training](#training), [Using the model](#using-the-model) |
-| ბიბლიოთეკები და დამოკიდებულებები | [`requirements.txt`](requirements.txt), [Installation](#installation) |
-| სტრუქტურა და გაშვება | [Project structure](#project-structure), [Quick start](#quick-start) |
-| ახალ გამოსახულებებზე გამოყენება | `predict.py`, ვებ დემო (`app.py`), API (`POST /predict`) |
-| შედეგების ვიზუალური წარმოდგენა | მაგალითები ზემოთ და [Demo](#demo)-ში, overlay / mask / cut-out დემოში და `predict.py`-ის გამოსავალში, [Results](#results) |
-| მოქმედი API / აპლიკაცია | `uvicorn api:app` → `/docs` (REST API) და `/ui` (ვებ დემო), Docker |
-| გაწვრთნილი მოდელის ფაილი | `weights/v3.pt`, `weights/v5.pt` (რეპოზიტორიაშივეა), ხელახლა მიღება: [`weights/README.md`](weights/README.md) |
+| Full source code | `petseg/` (model, data, inference), `train.py`, `evaluate.py`, `predict.py`, `api.py`, `app.py`, `notebooks/` |
+| Training and usage instructions | [Training](#training), [Using the model](#using-the-model) |
+| Libraries and dependencies | [`requirements.txt`](requirements.txt), [Installation](#installation) |
+| Project structure and how to run it | [Project structure](#project-structure), [Quick start](#quick-start) |
+| Using the model on new images | `predict.py`, web demo (`app.py`), API (`POST /predict`) |
+| Visual presentation of results | examples above and in [Demo](#demo), overlay / mask / cut-out in the demo and in `predict.py`'s output, [Results](#results) |
+| Working API / application | `uvicorn api:app` → `/docs` (REST API) and `/ui` (web demo), Docker |
+| Trained model file | `weights/v3.pt`, `weights/v5.pt` (included in the repository); to rebuild them: [`weights/README.md`](weights/README.md) |
 
 ## Quick start
 
