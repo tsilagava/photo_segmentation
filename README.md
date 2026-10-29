@@ -187,6 +187,7 @@ Dockerfile
 
 | Notebook | What it does |
 |---|---|
+| `EDA.ipynb` | exploratory data analysis: trimap values, class balance, pet size and position, breeds, empty masks and near-duplicates; the training choices follow from it |
 | `Pet_Annotation_Audit.ipynb` | audits the trimaps and writes the cleaned ones |
 | `Pet_Segmentation_Training.ipynb`, `_v2` | first models; boundary as a third class, class-weighted loss |
 | `Pet_Segmentation_Training_v3.ipynb` | boundary ignored, CE + Dice without class weights (256 px) |
