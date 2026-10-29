@@ -1,4 +1,4 @@
-"""Download the trained weights into weights/ (from a GitHub Release, Hugging Face or any direct link).
+"""Download the trained weights into weights/ (only needed if you got the code without them, e.g. as a source zip).
 
     python scripts/download_weights.py                         # uses the URLs below
     python scripts/download_weights.py --v5 <url> --v3 <url>
@@ -7,10 +7,9 @@ import argparse
 import urllib.request
 from pathlib import Path
 
-# Release assets: attach weights/v5.pt and weights/v3.pt to a GitHub Release tagged v1.0.
 URLS = {
-    "v5": "https://github.com/tsilagava/photo_segmentation/releases/download/v1.0/v5.pt",
-    "v3": "https://github.com/tsilagava/photo_segmentation/releases/download/v1.0/v3.pt",
+    "v5": "https://github.com/tsilagava/photo_segmentation/raw/main/weights/v5.pt",
+    "v3": "https://github.com/tsilagava/photo_segmentation/raw/main/weights/v3.pt",
 }
 
 

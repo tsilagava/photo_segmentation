@@ -12,5 +12,3 @@ predictions/
 flagged/
 .gradio/
 
-# trained weights are published as release assets, not committed
-weights/*.pt

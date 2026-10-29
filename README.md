@@ -16,15 +16,14 @@ plus optional **soft edges with ViTMatte**. Includes training and evaluation scr
 | ახალ გამოსახულებებზე გამოყენება | `predict.py`, ვებ დემო (`app.py`), API (`POST /predict`) |
 | შედეგების ვიზუალური წარმოდგენა | overlay / mask / cut-out დემოში და `predict.py`-ის გამოსავალში, [Results](#results) |
 | მოქმედი API / აპლიკაცია | `uvicorn api:app` → `/docs` (REST API) და `/ui` (ვებ დემო), Docker |
-| გაწვრთნილი მოდელის ფაილი | [`weights/README.md`](weights/README.md): ჩამოტვირთვა, ექსპორტი ან ხელახლა გაწვრთნა |
+| გაწვრთნილი მოდელის ფაილი | `weights/v3.pt`, `weights/v5.pt` (რეპოზიტორიაშივეა), ხელახლა მიღება: [`weights/README.md`](weights/README.md) |
 
 ## Quick start
 
 ```bash
 git clone https://github.com/tsilagava/photo_segmentation.git && cd photo_segmentation
 python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-python scripts/download_weights.py          # -> weights/v3.pt, weights/v5.pt
+pip install -r requirements.txt             # the trained models are already in weights/
 uvicorn api:app --port 8000                 # demo: http://localhost:8000/ui   API docs: http://localhost:8000/docs
 ```
 
@@ -112,8 +111,9 @@ pip install -r requirements.txt
 
 ## Getting the trained model
 
-See [`weights/README.md`](weights/README.md). In short: `python scripts/download_weights.py`, or export your own
-checkpoint with `python scripts/export_weights.py path/to/best.pt weights/v5.pt`, or retrain (below).
+The trained models are in the repository: `weights/v3.pt` (256 px, epoch 34) and `weights/v5.pt` (384 px, epoch 32),
+49 MB each (float16). They are loaded automatically. To rebuild them, export a training checkpoint with
+`python scripts/export_weights.py path/to/best.pt weights/v5.pt`, or retrain (below). See [`weights/README.md`](weights/README.md).
 
 ## Training
 
@@ -184,7 +184,7 @@ r = seg.predict("cat.jpg", tta=True, matting=False)   # r["mask"], r["prob"], r[
 
 ```bash
 docker build -t petseg .
-docker run -p 8000:8000 -v "$PWD/weights:/app/weights" petseg
+docker run -p 8000:8000 petseg
 ```
 
 **Hugging Face Space (public demo).** Create a Gradio Space, push this repository to it together with `weights/*.pt`
@@ -204,7 +204,7 @@ predict.py          batch prediction from the command line
 api.py              FastAPI service (+ the demo at /ui)
 app.py              Gradio web demo
 scripts/            export_weights.py, download_weights.py
-weights/            trained models (not in git; see weights/README.md)
+weights/            trained models v3.pt, v5.pt (see weights/README.md)
 notebooks/          the Colab experiments
 tests/              smoke test (random weights, no dataset needed): pytest
 Dockerfile
