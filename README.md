@@ -55,14 +55,41 @@ photo ──► v3 (256 px) + TTA ─┐
 
 ## Results
 
-Official test set (empty masks dropped), full image resolution, cleaned trimaps, boundary excluded.
-Numbers from `evaluate.py` / notebook section 4b (`comparison_full_test.csv`).
+All numbers are on the **official test set: 3,662 images** (only empty masks dropped), against the cleaned trimaps,
+with the boundary band excluded. Pet IoU is pet vs background; "whole test set" pools all pixels, "per image" averages
+the images.
 
-| Model | Pet IoU (whole test set) | Pet IoU (per image) | Pet IoU, pets < 10 % |
+**Final pipeline (full image resolution).** From `Pet_Edges_Ensemble_ViTMatte.ipynb`, section 4b.
+
+| Model | Pet IoU (whole test set) | Pet IoU (per image) | pets < 10 % | 10–30 % | 30–50 % | > 50 % |
+|---|---|---|---|---|---|---|
+| v3 + TTA | 0.9747 | 0.9728 | 0.8958 | 0.9617 | 0.9780 | 0.9800 |
+| v5 + TTA | 0.9747 | 0.9726 | 0.8305 | 0.9664 | 0.9769 | 0.9806 |
+| **v3 + v5 ensemble** | **0.9775** | **0.9760** | **0.9016** | **0.9676** | **0.9799** | **0.9824** |
+
+The two models are complementary: v3 is much better on small pets, v5 on mid-sized ones, and averaging them beats
+both in every size group.
+
+**Model versions (labels at 384 px).** From `Pet_Segmentation_Training_v5.ipynb`, section 6b.
+
+| Model | Pet IoU | Pet Dice | mIoU (2-class) | Pixel acc. | Pet IoU, pets < 10 % |
+|---|---|---|---|---|---|
+| v3 | 0.9683 | 0.9839 | 0.9758 | 0.9889 | 0.8623 |
+| v3 + TTA | 0.9725 | 0.9861 | 0.9790 | 0.9904 | 0.8865 |
+| v4 | 0.9693 | 0.9844 | 0.9766 | 0.9893 | 0.8433 |
+| v5 | 0.9707 | 0.9852 | 0.9777 | 0.9898 | 0.8239 |
+| v5 + TTA | 0.9735 | 0.9866 | 0.9798 | 0.9908 | 0.8262 |
+
+TTA (flip × 3 scales) adds about +0.3–0.4 IoU points to every model.
+
+**Soft edges (600 test images).** Ensemble mask vs a Gaussian-feathered edge vs ViTMatte.
+
+| | Ensemble mask | + feathering | + ViTMatte |
 |---|---|---|---|
-| v3 + TTA | TODO | TODO | TODO |
-| v5 + TTA | TODO | TODO | TODO |
-| **v3 + v5 ensemble** | TODO | TODO | TODO |
+| Pet IoU (non-boundary pixels) | 0.9703 | 0.9700 | 0.9696 |
+| Soft pixels inside the annotated boundary band | | 0.803 | **0.888** |
+
+ViTMatte keeps the IoU and puts its soft pixels where the annotators marked the edge much more often than blurring does.
 
 Reproduce with `python evaluate.py --labels <trimaps_clean> --splits <clean_splits>`.
 
