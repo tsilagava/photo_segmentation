@@ -1,6 +1,8 @@
 """Oxford-IIIT Pet: download, splits, labels and the training augmentation (v5 recipe)."""
 import random
+import shutil
 import tarfile
+import time
 import urllib.request
 from pathlib import Path
 
@@ -12,8 +14,8 @@ from torchvision import tv_tensors
 from torchvision.transforms import v2
 
 ARCHIVES = {
-    "images.tar.gz": "https://thor.robots.ox.ac.uk/datasets/pets/images.tar.gz",
-    "annotations.tar.gz": "https://thor.robots.ox.ac.uk/datasets/pets/annotations.tar.gz",
+    "images.tar.gz": "https://thor.robots.ox.ac.uk/pets/images.tar.gz",
+    "annotations.tar.gz": "https://thor.robots.ox.ac.uk/pets/annotations.tar.gz",
 }
 MEAN, STD = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
 IGNORE = 255
@@ -41,8 +43,7 @@ class PetData:
         for name, url in ARCHIVES.items():
             local = self.root / name
             if not local.exists():
-                print("downloading", url)
-                urllib.request.urlretrieve(url, local)
+                download(url, local)
             print("extracting", name)
             with tarfile.open(local) as t:
                 try:
@@ -61,6 +62,29 @@ class PetData:
 
     def rgb(self, name):
         return np.array(Image.open(self.images / f"{name}.jpg").convert("RGB"))
+
+
+def download(url, dest, retries=10):
+    """Downloads to dest.part, resuming after dropped connections, and renames to dest only when complete."""
+    part = Path(f"{dest}.part")
+    print("downloading", url)
+    for attempt in range(retries):
+        have = part.stat().st_size if part.exists() else 0
+        req = urllib.request.Request(url, headers={"Range": f"bytes={have}-"} if have else {})
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                if have and r.status != 206:   # server ignored the range: start over
+                    have = 0
+                total = have + int(r.headers.get("Content-Length", 0))
+                with open(part, "ab" if have else "wb") as f:
+                    shutil.copyfileobj(r, f, 1 << 20)
+            if part.stat().st_size >= total:
+                part.rename(dest)
+                return
+        except OSError as e:
+            print(f"  connection dropped at {(part.stat().st_size if part.exists() else 0) / 1e6:.0f} MB ({e}), resuming")
+            time.sleep(min(30, 2 ** attempt))
+    raise RuntimeError(f"could not download {url}")
 
 
 def read_list(path):
